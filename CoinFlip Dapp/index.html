@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>CoinFlip DAPP</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script type="text/javascript" src="./abi.js"></script>
+    <script type="text/javascript" src="./main.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src='https://kit.fontawesome.com/fcd413f20f.js' ></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+    ::placeholder{
+      color: white;
+      font-size: 20px;
+    }
+        /* The Modal (background) */
+    .modal {
+     display: none; /* Hidden by default */
+     position: fixed; /* Stay in place */
+     z-index: 1; /* Sit on top */
+     left: 0;
+     top: 0;
+     width: 100%; /* Full width */
+     height: 100%; /* Full height */
+     overflow: auto; /* Enable scroll if needed */
+     background-color: rgb(0,0,0); /* Fallback color */
+     background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+    }
+
+    /* Modal Content/Box */
+    .modal-content {
+     background-color: rgb(208, 97, 197);
+     margin: 15% auto; /* 15% from the top and centered */
+     padding: 20px;
+     border: 1px solid #888;
+     width: 800px;
+     height: 300px; /* Could be more or less, depending on screen size */
+     -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+    }
+
+    /* The Close Button */
+    .close {
+     color: orange;
+     float: right;
+     font-size: 28px;
+     font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+     color: black;
+     text-decoration: none;
+     cursor: pointer;
+    }
+    .admin{
+      display: none;
+    }
+    .owner-functions{
+      display: none;
+    }
+    @-webkit-keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity:1 ;}
+    }
+    </style>
+
+  </head>
+  <body style="background: rgb(130, 39, 154); " >
+    <img id ="coin-flip-anim" src="Graphics/161283461031218797.png" style="position: absolute; width:100px;height:100px;right: 925px; top: 11px"/><br><br>
+    <div class="jumbotron jumbotron-fluid" style="background: rgb(130, 39, 154)">
+      <div class="container" style="background: rgb(130, 39, 154)" >
+        <h1 class="display-4" style="color:white;float:right;padding-right:460px;font-weight:bold;text-shadow: 7px 7px purple;)">Coin Flip</h1>
+        <p class="lead" style="color:white;float:right;padding-right:395px;font-weight:bold;font-size:25px;text-shadow: 6px 6px purple;">Double your amount each win!</p>
+      </div>
+    </div>
+
+    <div class="container" style="border-style:solid; position: absolute; right: 380px; top: 270px;border-radius: 25px;background:rgb(189, 77, 223); border-color: rgb(218, 0, 239); border-width: 3px; box-shadow: 0px 0px 20px rgb(222, 35, 239); ">
+      <div><br><br>
+        <span id="balance_output" class='fab fa-ethereum' style="font-size: 35px; position: absolute; right: 575px; top: 70px;font-weight: bold; color: black;"> </span>
+        <span id="rewards_output" class='fab fa-ethereum' style="font-size: 35px; position: absolute; right: 575px; top: 175px;font-weight: bold; color: black;"> </span>
+        <p style="font-weight: bold; font-size: 28px; position: absolute; color: white; right: 380px; top: 20px;text-shadow: 4px 4px purple;" >TOTAL ETHEREUM IN REWARDS POOL</p><p style="font-weight: bold; font-size: 28px; position: absolute; color: white; right: 505px; top: 120px;text-shadow: 4px 4px purple;" >YOUR REWARDS </p>
+        <br><br><br><br><br><br><br><h2 style="font-weight: bold; font-size: 32px; position: absolute; color: white; right: 530px; top:235px;text-shadow: 4px 4px purple;">BET ETHER</h2><br><br><br>
+        <div><br>
+          <input id="bet_amount_input" type="text" placeholder="Enter an ether amount (mininum 0.1 ether)" style="background-color: rgb(189, 77, 223); border: none; border-bottom: 3px solid rgb(229, 0, 249); font-size: 25px;border-radius: 4px; width:420px; height: 40px; position: absolute; right: 410px; top:300px; color: white; font-weight: bold;"><br><br>
+        </div>
+        <div>
+          <select name="coin" id="coinsides" style="background-color: rgb(189, 77, 223); border: none; border-bottom: 3px solid rgb(229, 0, 249); border-radius: 4px; width:420px; height: 40px; position: absolute; right: 410px; top:380px; color: white; font-weight: bold; font-size: 20px;">
+            <option value="" style="text-shadow: 1px 1px purple;" disabled selected hidden>Select a coin side</option>
+            <option value="Heads">Heads</option>
+            <option value="Tails">Tails</option>
+          </select>
+        </div><br><br><br>
+    </div>
+    <button type="button" id="place_bet_button" class="btn btn-primary" style="font-size: 30px; position: absolute; top: 540px; width: 400px; height: 80px; background-color: purple; border: 2.5px solid rgb(218, 0, 239); border-radius: 15px;box-shadow: 0px 0px 20px rgb(222, 35, 239);">Place Bet</button>
+    <button type="button" id="claim_rewards_button" class="btn btn-primary" style="font-size: 30px; position: absolute; top: 540px; width: 400px; height: 80px; background-color: purple; border: 2.5px solid rgb(218, 0, 239); border-radius: 15px;box-shadow: 0px 0px 20px rgb(222, 35, 239); position: absolute; right: 10px;">Claim Rewards</button>
+
+
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="result_output" style="font-weight: bold; font-size: 25px; position: absolute; color: white; right: 95px; top: 110px;text-shadow: 4px 4px purple;"></p>
+      </div>
+    </div>
+
+    <div id="adminfunctions" class="admin">
+        <i id="admin-commands"class="fas fa-cog fa-spin" style="position: absolute; font-size: 40px; right: -360px; top: -250px;"></i>
+    </div>
+
+    <div id="commands" class="owner-functions">
+      <button type="button" id="deposit_in_contract" class="btn btn-primary" style="font-size: 15px; position: absolute; top: -250px; right: 1300px; width: 200px; height: 80px; background-color: purple; border: 2.5px solid rgb(218, 0, 239); border-radius: 15px;box-shadow: 0px 0px 20px rgb(222, 35, 239);">Deposit ETH in contract</button>
+      <input id="deposit_amount_input" type="text" placeholder="Enter deposit amount" style="background-color: rgb(189, 77, 223); border: 2.5px solid rgb(218, 0, 239); border-radius: 7px; font-size: 15px; width:200px; height: 40px; position: absolute; right: 1080px; top:-230px; color: white; box-shadow: 0px 0px 20px rgb(222, 35, 239);">
+      <button type="button" id="widthdraw_from_contract" class="btn btn-primary" style="font-size: 15px; position: absolute; top: -150px; right: 1300px; width: 200px; height: 80px; background-color: purple; border: 2.5px solid rgb(218, 0, 239); border-radius: 15px;box-shadow: 0px 0px 20px rgb(222, 35, 239); position: absolute;">Withdraw ETH from contract</button>
+      <button type="button" id="destroy_contract" class="btn btn-primary" style="font-size: 15px; position: absolute; top: -50px; right: 1300px; width: 200px; height: 80px; background-color: purple; border: 2.5px solid rgb(218, 0, 239); border-radius: 15px;box-shadow: 0px 0px 20px rgb(222, 35, 239); position: absolute;">Destroy contract</button>
+    </div>
+
+
+
+  </body>
+</html>
